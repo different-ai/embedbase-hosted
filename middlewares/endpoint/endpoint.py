@@ -10,6 +10,11 @@ _IGNORED_PATHS = [
     "docs",
 ]
 
+ALLOWED_ENDPOINTS = [
+    "search",
+    "health",
+    "test", # HACK of health in embedbase could be better
+]
 def middleware(app: FastAPI):
     @app.middleware("http")
     async def endpoint(request: Request, call_next) -> Tuple[str, str]:
@@ -21,7 +26,8 @@ def middleware(app: FastAPI):
 
         # ie /v1/foobar/search
         path_segments = request.scope["path"].split("/")
-        if path_segments[-1] != "search":
+        # or health
+        if path_segments[-1] not in ALLOWED_ENDPOINTS:
             return JSONResponse(
                 status_code=400,
                 content={"message": "Only search endpoint is allowed"},

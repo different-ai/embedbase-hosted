@@ -21,7 +21,7 @@ run/prod:
 
 test: ## [Local development] Run tests with pytest.
 	make run/dev &
-	sleep 15
+	while ! curl -s -X GET http://localhost:8000/health | grep "success"; do sleep 1; done
 	python3 -m pytest -s middlewares/endpoint/test_endpoint.py
 	docker-compose down
 	@echo "Done testing"
