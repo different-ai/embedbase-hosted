@@ -15,16 +15,15 @@ spec:
       serviceAccountName: obsidian-ai-cloud-run@obsidian-ai.iam.gserviceaccount.com
       containerConcurrency: 80
       containers:
-        image: gcr.io/obsidian-ai/embedbase-hosted:0.0.7
-        # TODO: fix health?
-        # startupProbe:
-        #   httpGet:
-        #     path: /health
-        #   initialDelaySeconds: 30
-        #   successThreshold: 1
-        #   periodSeconds: 30
-        #   timeoutSeconds: 30
-        #   failureThreshold: 30
+        image: gcr.io/obsidian-ai/embedbase-hosted:0.0.1
+        startupProbe:
+          httpGet:
+            path: /health
+          initialDelaySeconds: 30
+          successThreshold: 1
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 30
         env:
           - name: ENVIRONMENT
             value: "production"

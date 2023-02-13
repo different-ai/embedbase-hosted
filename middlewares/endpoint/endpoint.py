@@ -19,6 +19,7 @@ def middleware(app: FastAPI):
         if request.scope["type"] != "http":  # pragma: no cover
             return await call_next(request)
 
+        # ie /v1/foobar/search
         path_segments = request.scope["path"].split("/")
         if path_segments[-1] != "search":
             return JSONResponse(
