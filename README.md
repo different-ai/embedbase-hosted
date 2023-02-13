@@ -1,5 +1,35 @@
 
 
+## Usage
+
+```bash
+curl -X POST \
+  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/dev/search \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "query": "Something about a red planet"
+}'
+```
+
+```bash
+curl -X POST \
+  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/dev \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "documents": [
+    {
+      "data": "Elon is sipping a tea on Mars"
+    }
+  ]
+}'
+```
+
+>{"message":"Only search endpoint is allowed"}
+
+
+
+## Infra
+
 ```yaml
 # config.yaml
 # ...
