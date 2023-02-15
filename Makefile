@@ -6,6 +6,10 @@ VERSION=$(shell sed -n 's/.*image:.*:\(.*\)/\1/p' service.prod.yaml)
 IMAGE_URL=$(shell echo "gcr.io/${GCLOUD_PROJECT}/${SERVICE}:${VERSION}")
 REGION="us-central1"
 
+
+# notify current gcp project
+$(info Current GCP project: ${GCLOUD_PROJECT})
+
 install: ## [DEVELOPMENT] Install the API dependencies
 	virtualenv env; \
 	. env/bin/activate; \

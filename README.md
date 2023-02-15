@@ -39,18 +39,46 @@ middlewares:
 ```
 
 ```bash
-gcloud secrets create EMBEDBASE_HOSTED --replication-policy=automatic
-gcloud secrets versions add EMBEDBASE_HOSTED --data-file=config.yaml
+SECRET_NAME="FIREBASE_ADMIN_SERVICE_ACCOUNT"
+gcloud secrets create ${SECRET_NAME} --replication-policy=automatic
+gcloud secrets versions add ${SECRET_NAME} --data-file=svc.prod.json
+```
+
+```bash
+SECRET_NAME="EMBEDBASE_HOSTED"
+gcloud secrets create ${SECRET_NAME} --replication-policy=automatic
+gcloud secrets versions add ${SECRET_NAME} --data-file=config.yaml
 ```
 
 ```bash
 gcloud run services set-iam-policy embedbase-hosted ./policy.yaml --region us-central1
 ```
 
-### Automatic deployment through GitHub Actions
 
 ```bash
 PROJECT_ID=$(gcloud config get-value project)
+
+# create a service account for the cloud run runtime
+gcloud iam service-accounts create ${PROJECT_ID}-cloud-run \
+  --display-name "Cloud Run"
+
+# get the service account email
+RUNTIME_SVC="${PROJECT_ID}-cloud-run@${PROJECT_ID}.iam.gserviceaccount.com"
+
+# give the service account access to the secret
+gcloud secrets add-iam-policy-binding ${SECRET_NAME} \
+  --member serviceAccount:${RUNTIME_SVC} \
+  --role roles/secretmanager.secretAccessor
+
+gcloud projects add-iam-policy-binding ${PROJECT_ID} \
+  --member serviceAccount:${RUNTIME_SVC} \
+  --role roles/secretmanager.secretAccessor
+
+```
+
+### Automatic deployment through GitHub Actions
+
+```bash
 
 # create service account for pushing containers to gcr
 # and deploying to cloud run
