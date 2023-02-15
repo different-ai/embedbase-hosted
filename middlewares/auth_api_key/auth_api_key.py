@@ -50,7 +50,7 @@ async def on_auth_error(exc: Exception, scope: dict):
         content={"message": message},
     )
 
-async def check_api_key(scope):
+async def check_api_key(scope: dict) -> Tuple[str, str]:
         # extract token from header
     for name, value in scope["headers"]:  # type: bytes, bytes
         if name == b"authorization":
@@ -67,22 +67,20 @@ async def check_api_key(scope):
     if len(s) != 2:
         raise DetailedError(scope, 401, "invalid authorization header")
 
-    token_type, token = s
+    token_type, api_key = s
     assert (
         token_type == "Bearer"
     ), "Authorization header must be `Bearer` type. Like: `Bearer LONG_JWT`"
 
-    assert token, "invalid api key"
+    assert api_key, "invalid api key"
 
     try:
-        # check collection "apikeys" for token
-        doc = fc.collection("apikeys").document(token).get()
+        # check collection "apikeys" for api_key
+        doc = fc.collection("apikeys").document(api_key).get()
         if not doc.exists:
             raise DetailedError(scope, 401, "invalid api key")
         data = doc.to_dict()
         scope["uid"] = data["userId"]
-        print("uid", scope["uid"])
-        print("token", token)
     except Exception as err:
         raise DetailedError(scope, 401, str(err))
 
@@ -90,7 +88,9 @@ async def check_api_key(scope):
         user: auth.UserRecord = auth.get_user(scope["uid"])
     except:
         raise DetailedError(scope, 401, "invalid uid")
-    return scope["uid"]
+
+
+    return scope["uid"], api_key
 
 def middleware(app: FastAPI):
     @app.middleware("http")
@@ -106,11 +106,28 @@ def middleware(app: FastAPI):
             path in request.scope["path"] for path in _IGNORED_PATHS
         ):
             return await call_next(request)
-
+        
+        path_segments = request.scope["path"].split("/")
         try:
-            user = await check_api_key(request.scope)
+            user_id, api_key = await check_api_key(request.scope)
+            posthog.identify(api_key)
+            event = None
+            # POST /v1/{vault_id}/search
+            if "search" == path_segments[-1]:
+                event = "search"
+            # POST /v1/{vault_id}
+            elif request.scope["method"] == "POST":
+                event = "add"
+            # otherwise we don't track
+            if event:
+                posthog.capture(
+                    api_key,
+                    event=event,
+                    # properties={
+                    #     "version": request.headers.get("X-Client-Version", "unknown"),
+                    # },
+                )
         except Exception as exc:
             return await on_auth_error(exc, request.scope)
-
         response = await call_next(request)
         return response
