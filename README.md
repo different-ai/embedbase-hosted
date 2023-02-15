@@ -3,9 +3,13 @@
 ## Usage
 
 ```bash
+API_KEY="foobar"
+VAULT_ID="myvault"
+
 curl -X POST \
-  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/dev/search \
+  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/${VAULT_ID}/search \
   -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${API_KEY}" \
   -d '{
   "query": "Something about a red planet"
 }'
@@ -34,7 +38,8 @@ curl -X POST \
 # config.yaml
 # ...
 middlewares:
-  - middlewares.endpoint
+  # - middlewares.endpoint
+  - middlewares.auth_api_key
 # ...
 ```
 
@@ -110,3 +115,7 @@ cat ${KEY_PATH}
 # copy the key to GitHub secrets as `GCP_SA_KEY_PROD`
 rm -rf ${KEY_PATH}
 ```
+
+## Extra ops
+
+- [Adding new secret version](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase)

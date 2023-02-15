@@ -15,15 +15,15 @@ spec:
       serviceAccountName: embedbase-cloud-run@embedbase.iam.gserviceaccount.com
       containerConcurrency: 80
       containers:
-        image: gcr.io/embedbase/embedbase-hosted:0.0.7
-        startupProbe:
-          httpGet:
-            path: /health
-          initialDelaySeconds: 30
-          successThreshold: 1
-          periodSeconds: 30
-          timeoutSeconds: 30
-          failureThreshold: 30
+        image: gcr.io/embedbase/embedbase-hosted:0.0.8
+        # startupProbe:
+        #   httpGet:
+        #     path: /health
+        #   initialDelaySeconds: 30
+        #   successThreshold: 1
+        #   periodSeconds: 30
+        #   timeoutSeconds: 30
+        #   failureThreshold: 30
         env:
           - name: ENVIRONMENT
             value: "production"
@@ -50,7 +50,7 @@ spec:
           secret:
             secretName: EMBEDBASE_HOSTED
             items:
-              - key: "5"
+              - key: "6"
                 path: config.yaml
         - name: firebase_admin_service_account
           secret:
