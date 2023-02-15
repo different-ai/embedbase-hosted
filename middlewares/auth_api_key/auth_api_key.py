@@ -72,6 +72,8 @@ async def check_api_key(scope):
         token_type == "Bearer"
     ), "Authorization header must be `Bearer` type. Like: `Bearer LONG_JWT`"
 
+    assert token, "invalid api key"
+
     try:
         # check collection "apikeys" for token
         doc = fc.collection("apikeys").document(token).get()
