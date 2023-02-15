@@ -5,7 +5,7 @@ on:
     tags:
       - "*.*.*"
 env:
-  PROJECT_ID: obsidian-ai
+  PROJECT_ID: embedbase
   SERVICE: embedbase-hosted
 jobs:
   build:

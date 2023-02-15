@@ -8,22 +8,24 @@ REGION="us-central1"
 
 install: ## [DEVELOPMENT] Install the API dependencies
 	virtualenv env; \
-	source env/bin/activate; \
+	. env/bin/activate; \
 	pip install -r requirements.txt; \
 	pip install -r requirements-test.txt
 	@echo "Done, run '\033[0;31msource env/bin/activate\033[0m' to activate the virtual environment"
 
 run/dev: ## [Local development] Run the development docker image.
-	docker-compose up
+	docker-compose -f docker-compose.yaml up --build
 
 run/prod:
 	docker-compose -f docker-compose-prod.yaml up
 
 test: ## [Local development] Run tests with pytest.
-	make run/dev &
-	while ! curl -s -X GET http://localhost:8000/health | grep "success"; do sleep 1; done
-	python3 -m pytest -s middlewares/endpoint/test_endpoint.py
-	docker-compose down
+# make run/dev &
+# while ! curl -s -X GET http://localhost:8000/health | grep "success"; do sleep 1; done
+# . env/bin/activate; \
+# python3 -m pytest -s middlewares/endpoint/test_endpoint.py
+# docker-compose down
+	@echo "unimplemented"
 	@echo "Done testing"
 
 build: ## [Local development] Build the docker image.

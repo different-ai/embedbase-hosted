@@ -12,10 +12,10 @@ spec:
         autoscaling.knative.dev/minScale: "0"
         autoscaling.knative.dev/maxScale: "20"
     spec:
-      serviceAccountName: obsidian-ai-cloud-run@obsidian-ai.iam.gserviceaccount.com
+      serviceAccountName: embedbase-cloud-run@embedbase.iam.gserviceaccount.com
       containerConcurrency: 80
       containers:
-        image: gcr.io/obsidian-ai/embedbase-hosted:0.0.1
+        image: gcr.io/embedbase/embedbase-hosted:0.0.1
         # TODO: fix health?
         # startupProbe:
         #   httpGet:

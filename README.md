@@ -75,7 +75,7 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
   --role roles/iam.serviceAccountUser
 
 # get svc key
-KEY_PATH="obsidian-ai.cloud-run-deployer.svc.prod.json"
+KEY_PATH="${PROJECT_ID}.cloud-run-deployer.svc.prod.json"
 gcloud iam service-accounts keys create ${KEY_PATH} \
   --iam-account=cloud-run-deployer@${PROJECT_ID}.iam.gserviceaccount.com
 cat ${KEY_PATH}
