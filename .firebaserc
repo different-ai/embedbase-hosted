@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "embedbase"
+  },
+  "targets": {
+    "embedbase": {
+      "hosting": {
+        "playground": [
+          "embedbase"
+        ]
+      }
+    }
+  }
+}

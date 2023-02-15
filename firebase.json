@@ -1,0 +1,21 @@
+{
+  "hosting": [
+    {
+      "public": "public",
+      "target": "playground",
+      "ignore": [
+        "**/.*"
+      ],
+      "rewrites": [
+        {
+          "source": "/v1/*",
+          "run": {
+            "serviceId": "embedbase-hosted",
+            "region": "us-central1"
+          }
+        }
+      ],
+      "trailingSlash": false
+    }
+  ]
+}

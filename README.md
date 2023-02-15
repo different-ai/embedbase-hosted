@@ -116,6 +116,28 @@ cat ${KEY_PATH}
 rm -rf ${KEY_PATH}
 ```
 
+## Custom domain name
+
+```bash
+# login to firebase
+firebase login
+
+# add firebase project if not already added
+firebase projects:addfirebase ${PROJECT_ID}
+
+# select project
+firebase use ${PROJECT_ID}
+
+# init firebase
+firebase init
+
+# add target
+firebase target:apply hosting playground ${PROJECT_ID}
+
+# deploy
+firebase deploy --only hosting
+```
+
 ## Extra ops
 
 - [Adding new secret version](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase)
