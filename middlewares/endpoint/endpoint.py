@@ -30,7 +30,7 @@ def middleware(app: FastAPI):
 
         # ie /v1/{vault_id}/search
         path_segments = request.scope["path"].split("/")
-
+        print("yo", path_segments[1] not in INCLUDED_VAULTS)
         # if the vault is not "showerthought", accept the request
         if path_segments[1] not in INCLUDED_VAULTS: # TODO: can it crash if there is no vault in q?
             return await call_next(request)

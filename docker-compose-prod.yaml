@@ -11,6 +11,6 @@ services:
       - PORT=8000
     volumes:
       - ./config.yaml:/app/config.yaml
-      - ./svc.prod.json:/app/svc.prod.json
-      # - ./middlewares/endpoint/endpoint.py:/app/middlewares/endpoint.py
+      - ./svc.prod.json:/secrets_firebase/svc.prod.json
+      - ./middlewares/endpoint/endpoint.py:/app/middlewares/endpoint.py
       - ./middlewares/auth_api_key/auth_api_key.py:/app/middlewares/auth_api_key.py

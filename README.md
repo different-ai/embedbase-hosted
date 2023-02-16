@@ -5,10 +5,11 @@ If you are looking for a `config.yaml`, the best bet is to get production config
 
 ```bash
 API_KEY="foobar"
-VAULT_ID="myvault"
+VAULT_ID="showerthoughts"
+URL="https://embedbase-hosted-usx5gpslaq-uc.a.run.app"
 
 curl -X POST \
-  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/${VAULT_ID}/search \
+  ${URL}/v1/${VAULT_ID}/search \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${API_KEY}" \
   -d '{
@@ -18,8 +19,9 @@ curl -X POST \
 
 ```bash
 curl -X POST \
-  https://embedbase-hosted-c6txy76x2q-uc.a.run.app/v1/dev \
+  ${URL}/v1/${VAULT_ID} \
   -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer ${API_KEY}" \
   -d '{
   "documents": [
     {
