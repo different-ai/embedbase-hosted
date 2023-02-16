@@ -5,6 +5,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from firebase_admin import initialize_app, credentials, firestore, auth
 import posthog
+from starlette.middleware.base import BaseHTTPMiddleware
+
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 
 _IGNORED_PATHS = [
@@ -92,9 +94,8 @@ async def check_api_key(scope: dict) -> Tuple[str, str]:
 
     return scope["uid"], api_key
 
-def middleware(app: FastAPI):
-    @app.middleware("http")
-    async def auth_api_key(request: Request, call_next) -> Tuple[str, str]:
+class AuthApiKey(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next) -> Tuple[str, str]:
         """
         Only allow calls on search endpoint
         """
