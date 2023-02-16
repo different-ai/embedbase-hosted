@@ -8,7 +8,7 @@
       ],
       "rewrites": [
         {
-          "source": "/v1/*",
+          "source": "*",
           "run": {
             "serviceId": "embedbase-hosted",
             "region": "us-central1"

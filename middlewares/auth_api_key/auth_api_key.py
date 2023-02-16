@@ -110,7 +110,7 @@ def middleware(app: FastAPI):
         path_segments = request.scope["path"].split("/")
         try:
             user_id, api_key = await check_api_key(request.scope)
-            posthog.identify(api_key)
+            posthog.identify(user_id)
             event = None
             # POST /v1/{vault_id}/search
             if "search" == path_segments[-1]:
@@ -121,11 +121,11 @@ def middleware(app: FastAPI):
             # otherwise we don't track
             if event:
                 posthog.capture(
-                    api_key,
+                    user_id,
                     event=event,
-                    # properties={
-                    #     "version": request.headers.get("X-Client-Version", "unknown"),
-                    # },
+                    properties={
+                        "api_key": api_key,
+                    },
                 )
         except Exception as exc:
             return await on_auth_error(exc, request.scope)

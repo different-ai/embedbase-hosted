@@ -15,6 +15,10 @@ ALLOWED_ENDPOINTS = [
     "health",
     "test", # HACK of health in embedbase could be better
 ]
+# vaults that will use this rule
+INCLUDED_VAULTS = [
+    "showerthoughts"
+]
 def middleware(app: FastAPI):
     @app.middleware("http")
     async def endpoint(request: Request, call_next) -> Tuple[str, str]:
@@ -24,8 +28,13 @@ def middleware(app: FastAPI):
         if request.scope["type"] != "http":  # pragma: no cover
             return await call_next(request)
 
-        # ie /v1/foobar/search
+        # ie /v1/{vault_id}/search
         path_segments = request.scope["path"].split("/")
+
+        # if the vault is not "showerthought", accept the request
+        if path_segments[1] not in INCLUDED_VAULTS: # TODO: can it crash if there is no vault in q?
+            return await call_next(request)
+
         # or health
         if path_segments[-1] not in ALLOWED_ENDPOINTS:
             return JSONResponse(
