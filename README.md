@@ -1,4 +1,5 @@
 
+If you are looking for a `config.yaml`, the best bet is to get production config [here](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase).
 
 ## Usage
 
@@ -140,4 +141,5 @@ firebase deploy --only hosting
 
 ## Extra ops
 
-- [Adding new secret version](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase)
+- [Adding new secret version](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase). You should then update service.*.yaml with the new version number and deploy again.
+
