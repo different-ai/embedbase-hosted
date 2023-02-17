@@ -1,3 +1,6 @@
+# embedbase-hosted
+
+This repository is the powering the sandbox playground that you can try [here](https://app.embedbase.xyz/signup).
 
 If you are looking for a `config.yaml`, the best bet is to get production config [here](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase).
 
