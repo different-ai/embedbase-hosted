@@ -134,8 +134,7 @@ firebase use ${PROJECT_ID}
 # init firebase
 firebase init
 
-# add target
-firebase target:apply hosting playground ${PROJECT_ID}
+# update firebase.json
 
 # deploy
 firebase deploy --only hosting

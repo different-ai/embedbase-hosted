@@ -2,7 +2,7 @@
   "hosting": [
     {
       "public": "public",
-      "target": "playground",
+      "site": "embedbase-playground",
       "ignore": [
         "**/.*"
       ],
