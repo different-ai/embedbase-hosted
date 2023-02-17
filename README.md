@@ -4,40 +4,6 @@ This repository is the powering the sandbox playground that you can try [here](h
 
 If you are looking for a `config.yaml`, the best bet is to get production config [here](https://console.cloud.google.com/security/secret-manager/secret/EMBEDBASE_HOSTED/versions?project=embedbase).
 
-## Usage
-
-```bash
-API_KEY="foobar"
-VAULT_ID="showerthoughts"
-URL="https://embedbase-hosted-usx5gpslaq-uc.a.run.app"
-
-curl -X POST \
-  ${URL}/v1/${VAULT_ID}/search \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${API_KEY}" \
-  -d '{
-  "query": "Something about a red planet"
-}'
-```
-
-```bash
-curl -X POST \
-  ${URL}/v1/${VAULT_ID} \
-  -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer ${API_KEY}" \
-  -d '{
-  "documents": [
-    {
-      "data": "Elon is sipping a tea on Mars"
-    }
-  ]
-}'
-```
-
->{"message":"Only search endpoint is allowed"}
-
-
-
 ## Infra
 
 ```yaml
