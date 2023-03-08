@@ -12,6 +12,7 @@ tasks:
     - name: Generate SVC
       command: |
         eval $(gp env -e)
+        # TODO wrong project
         echo "$OBSIDIAN_AI_SVC" > svc.prod.json
         export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/svc.prod.json
         gcloud beta auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} --project=$(cat ${GOOGLE_APPLICATION_CREDENTIALS} | jq -r '.project_id')
@@ -32,6 +33,7 @@ tasks:
         # will crash btw
         firebase login --no-localhost
 
+# TODO: gcloud install
 # image: # TODO:broken image?
   # file: .gitpod.Dockerfile
 
