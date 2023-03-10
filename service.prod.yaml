@@ -16,21 +16,19 @@ spec:
       containerConcurrency: 80
       containers:
         image: gcr.io/embedbase/embedbase-hosted:0.1.7
-        # startupProbe:
-        #   httpGet:
-        #     path: /health
-        #   initialDelaySeconds: 30
-        #   successThreshold: 1
-        #   periodSeconds: 30
-        #   timeoutSeconds: 30
-        #   failureThreshold: 30
+        startupProbe:
+          httpGet:
+            path: /health
+          initialDelaySeconds: 30
+          successThreshold: 1
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 30
         env:
           - name: ENVIRONMENT
             value: "production"
           - name: UPLOAD_BATCH_SIZE
             value: "100"
-          - name: MAX_DOCUMENT_LENGTH
-            value: "5000"
         ports:
           - containerPort: 8080
             name: http1
@@ -50,7 +48,7 @@ spec:
           secret:
             secretName: EMBEDBASE_HOSTED
             items:
-              - key: "13"
+              - key: "14"
                 path: config.yaml
         - name: firebase_admin_service_account
           secret:

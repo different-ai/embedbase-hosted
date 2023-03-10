@@ -13,6 +13,7 @@ _IGNORED_PATHS = [
     "openapi.json",
     "redoc",
     "docs",
+    "health"
 ]
 
 SECRET_FIREBASE_PATH = (
@@ -97,7 +98,6 @@ async def check_api_key(scope: dict) -> Tuple[str, str]:
 class AuthApiKey(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Tuple[str, str]:
         """
-        Only allow calls on search endpoint
         """
         if request.scope["type"] != "http":  # pragma: no cover
             return await call_next(request)

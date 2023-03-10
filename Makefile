@@ -27,7 +27,6 @@ test: ## [Local development] Run tests with pytest.
 # make run/dev &
 # while ! curl -s -X GET http://localhost:8000/health | grep "success"; do sleep 1; done
 # . env/bin/activate; \
-# python3 -m pytest -s middlewares/endpoint/test_endpoint.py
 # docker-compose down
 	@echo "unimplemented"
 	@echo "Done testing"
@@ -45,6 +44,11 @@ deploy: push ## [Local development] Deploy the Cloud run service.
 	@echo "Will deploy embedbase-hosted to ${REGION} on ${GCLOUD_PROJECT}"
 	gcloud beta run services replace ./service.prod.yaml --region ${REGION}
 
+deploy/dev: ## [Local development] Deploy the Cloud run service.
+	docker buildx build . --platform linux/amd64 -t ${LATEST_IMAGE_URL}-dev -f ./Dockerfile
+	docker push ${LATEST_IMAGE_URL}-dev
+	gcloud beta run services replace ./service.dev.yaml --region ${REGION}
+
 release: ## [Local development] Release a new version of the API.
 	@echo "Releasing version ${VERSION}"; \
 	read -p "Commit content:" COMMIT; \
@@ -54,7 +58,7 @@ release: ## [Local development] Release a new version of the API.
 	git push origin main; \
 	git tag ${VERSION}; \
 	git push origin ${VERSION}
-	@echo "Done, check https://github.com/another-ai/embedbase-hosted/actions"
+	@echo "Done, check https://github.com/different-ai/embedbase-hosted/actions"
 
 .PHONY: help
 

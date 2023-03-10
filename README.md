@@ -10,7 +10,6 @@ If you are looking for a `config.yaml`, the best bet is to get production config
 # config.yaml
 # ...
 middlewares:
-  # - middlewares.endpoint
   - middlewares.auth_api_key
 # ...
 ```
