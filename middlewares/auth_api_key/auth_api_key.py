@@ -13,7 +13,8 @@ _IGNORED_PATHS = [
     "openapi.json",
     "redoc",
     "docs",
-    "health"
+    "health",
+    "test"
 ]
 
 SECRET_FIREBASE_PATH = (

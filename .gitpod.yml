@@ -14,6 +14,7 @@ tasks:
         eval $(gp env -e)
         gcloud auth login
         gcloud config set project embedbase
+        echo "sat project to embedbase"
         mkdir -p ~/.docker
         cat >~/.docker/config.json <<EOL
         {
