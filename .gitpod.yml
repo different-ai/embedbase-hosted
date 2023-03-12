@@ -28,6 +28,9 @@ tasks:
           }
         }
         EOL
+    - name: Init Supabase
+      command: |
+        npx supabase
 
 # TODO: gcloud install
 image: # TODO:broken image?

@@ -9,12 +9,15 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 
-_IGNORED_PATHS = [
+DEVELOPMENT_IGNORED_PATHS = [
     "openapi.json",
     "redoc",
     "docs",
+]
+
+PRODUCTION_IGNORED_PATHS = [
     "health",
-    "test"
+    "test" # HACK: implementation detail in embedbase health endpoint
 ]
 
 SECRET_FIREBASE_PATH = (
@@ -103,9 +106,13 @@ class AuthApiKey(BaseHTTPMiddleware):
         if request.scope["type"] != "http":  # pragma: no cover
             return await call_next(request)
 
+        if any(
+            path in request.scope["path"] for path in PRODUCTION_IGNORED_PATHS
+        ):
+            return await call_next(request)
         # in development mode, allow redoc, openapi etc
         if ENVIRONMENT == "development" and any(
-            path in request.scope["path"] for path in _IGNORED_PATHS
+            path in request.scope["path"] for path in DEVELOPMENT_IGNORED_PATHS
         ):
             return await call_next(request)
         
