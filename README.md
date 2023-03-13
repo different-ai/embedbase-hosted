@@ -87,26 +87,6 @@ cat ${KEY_PATH}
 rm -rf ${KEY_PATH}
 ```
 
-## Custom domain name
-
-```bash
-# login to firebase
-firebase login
-
-# add firebase project if not already added
-firebase projects:addfirebase ${PROJECT_ID}
-
-# select project
-firebase use ${PROJECT_ID}
-
-# init firebase
-firebase init
-
-# update firebase.json
-
-# deploy
-firebase deploy --only hosting
-```
 
 ## Extra ops
 
