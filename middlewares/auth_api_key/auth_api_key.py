@@ -1,4 +1,5 @@
 import os
+import yaml
 from typing import Tuple
 import warnings
 from fastapi import FastAPI, Request
@@ -6,8 +7,14 @@ from fastapi.responses import JSONResponse
 from firebase_admin import initialize_app, credentials, firestore, auth
 import posthog
 from starlette.middleware.base import BaseHTTPMiddleware
+from supabase import create_client, Client
+
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
+data = yaml.safe_load(open("config.yaml"))
+SUPABASE_URL = data["supabase_url"]
+SUPABASE_KEY = data["supabase_key"]
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 DEVELOPMENT_IGNORED_PATHS = [
     "openapi.json",
@@ -33,6 +40,7 @@ cred = credentials.Certificate(SECRET_FIREBASE_PATH + "/svc.prod.json")
 initialize_app(cred)
 fc = firestore.client()
 
+
 class DetailedError(Exception):
     def __init__(self, scope: dict, status_code: int, detail: str) -> None:
         self.scope = scope
@@ -42,12 +50,9 @@ class DetailedError(Exception):
     def __str__(self) -> str:
         return self.detail
 
+
 async def on_auth_error(exc: Exception, scope: dict):
-    status_code = (
-        exc.status_code
-        if hasattr(exc, "status_code")
-        else 500
-    )
+    status_code = exc.status_code if hasattr(exc, "status_code") else 500
     message = exc.detail if hasattr(exc, "detail") else str(exc)
 
     warnings.warn(message)
@@ -56,8 +61,27 @@ async def on_auth_error(exc: Exception, scope: dict):
         content={"message": message},
     )
 
+
+def get_in_firebase(api_key: str, scope: dict):
+    doc = fc.collection("apikeys").document(api_key).get()
+    if not doc.exists:
+        return None
+    data = doc.to_dict()
+    if "userId" not in data:
+        return None
+    return data["userId"]
+
+
+def get_in_supabase(api_key: str, scope: dict):
+    res = supabase.from_("api-keys").select("*").eq("api_key", api_key).execute()
+    print("res", res)
+    if not res.data or "user_id" not in res.data[0]:
+        return None
+    return res.data[0]["user_id"]
+
+
 async def check_api_key(scope: dict) -> Tuple[str, str]:
-        # extract token from header
+    # extract token from header
     for name, value in scope["headers"]:  # type: bytes, bytes
         if name == b"authorization":
             authorization = value.decode("utf8")
@@ -81,40 +105,35 @@ async def check_api_key(scope: dict) -> Tuple[str, str]:
     assert api_key, "invalid api key"
 
     try:
-        # check collection "apikeys" for api_key
-        doc = fc.collection("apikeys").document(api_key).get()
-        if not doc.exists:
+        uid = get_in_firebase(api_key, scope) or get_in_supabase(api_key, scope)
+        if not uid:
             raise DetailedError(scope, 401, "invalid api key")
-        data = doc.to_dict()
-        scope["uid"] = data["userId"]
+        scope["uid"] = uid
     except Exception as err:
         raise DetailedError(scope, 401, str(err))
 
-    try:
-        user: auth.UserRecord = auth.get_user(scope["uid"])
-    except:
-        raise DetailedError(scope, 401, "invalid uid")
-
+    # try:
+    #     user: auth.UserRecord = auth.get_user(scope["uid"])
+    # except:
+    #     raise DetailedError(scope, 401, "invalid uid")
 
     return scope["uid"], api_key
 
+
 class AuthApiKey(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next) -> Tuple[str, str]:
-        """
-        """
+        """ """
         if request.scope["type"] != "http":  # pragma: no cover
             return await call_next(request)
 
-        if any(
-            path in request.scope["path"] for path in PRODUCTION_IGNORED_PATHS
-        ):
+        if any(path in request.scope["path"] for path in PRODUCTION_IGNORED_PATHS):
             return await call_next(request)
         # in development mode, allow redoc, openapi etc
         if ENVIRONMENT == "development" and any(
             path in request.scope["path"] for path in DEVELOPMENT_IGNORED_PATHS
         ):
             return await call_next(request)
-        
+
         path_segments = request.scope["path"].split("/")
         try:
             user_id, api_key = await check_api_key(request.scope)
