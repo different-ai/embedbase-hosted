@@ -17,7 +17,6 @@ DEVELOPMENT_IGNORED_PATHS = [
 
 PRODUCTION_IGNORED_PATHS = [
     "health",
-    "test" # HACK: implementation detail in embedbase health endpoint
 ]
 
 SECRET_FIREBASE_PATH = (
@@ -119,7 +118,6 @@ class AuthApiKey(BaseHTTPMiddleware):
         path_segments = request.scope["path"].split("/")
         try:
             user_id, api_key = await check_api_key(request.scope)
-            request.scope["uid"] = user_id
             posthog.identify(user_id)
             event = None
             # POST /v1/{vault_id}/search
