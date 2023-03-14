@@ -3,7 +3,6 @@ from .auth_api_key import AuthApiKey
 import pytest
 import requests
 from fastapi import FastAPI, Request
-
 def test_user_cannot_write_to_another_vault():
     pass # TODO
     # response = requests.get(

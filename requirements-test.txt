@@ -5,15 +5,13 @@ pytest-cov
 pytest-xdist
 pytest
 ipykernel
-Flask
 ipywidgets
-plotly
-wandb
 httpx
 trio
 anyio
 pytest-asyncio
 jupyter
-functions_framework
 # for automatically removing unused imports
 autoflake
+
+git+https://github.com/different-ai/embedbase@main#egg=embedbase

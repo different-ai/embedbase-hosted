@@ -8,11 +8,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    command: uvicorn embedbase.__main__:app --reload --log-level debug --host 0.0.0.0
+    command: uvicorn main:app --reload --log-level debug --host 0.0.0.0
     environment:
       - PYTHONUNBUFFERED=1
       - PORT=8000
     volumes:
       - ./config.yaml:/app/config.yaml
       - ./svc.prod.json:/secrets_firebase/svc.prod.json
-      - ./middlewares/auth_api_key/auth_api_key.py:/app/middlewares/auth_api_key/auth_api_key.py
+      # - ./middlewares/auth_api_key/auth_api_key.py:/app/middlewares/auth_api_key/auth_api_key.py
