@@ -1,3 +1,4 @@
 fastapi
 posthog
 supabase
+firebase_admin

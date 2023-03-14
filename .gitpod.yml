@@ -1,5 +1,8 @@
 
 tasks:
+    - name: Generate SVC
+      command: |
+        echo $EMBEDBASE_SVC > svc.prod.json
     - name: Install dependencies
       command: |
         export PIP_USER=false
