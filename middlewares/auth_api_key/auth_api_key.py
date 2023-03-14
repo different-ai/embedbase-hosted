@@ -11,7 +11,16 @@ from supabase import create_client, Client
 
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
-data = yaml.safe_load(open("config.yaml"))
+SECRET_PATH = "/secrets" if os.path.exists("/secrets") else ".."
+# if can't find config.yaml in .. try . now (local dev)
+if not os.path.exists(SECRET_PATH + "/config.yaml"):
+    SECRET_PATH = "."
+
+if not os.path.exists(SECRET_PATH + "/config.yaml"):
+    # exit process with error
+    print("ERROR: Missing config.yaml file")
+
+data = yaml.safe_load(open(f"{SECRET_PATH}/config.yaml"))
 SUPABASE_URL = data["supabase_url"]
 SUPABASE_KEY = data["supabase_key"]
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
