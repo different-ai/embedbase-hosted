@@ -17,6 +17,9 @@ install: ## [DEVELOPMENT] Install the API dependencies
 	pip install -r requirements-test.txt
 	@echo "Done, run '\033[0;31msource env/bin/activate\033[0m' to activate the virtual environment"
 
+run:
+	python3 -m uvicorn main:app --reload --port ${LOCAL_PORT}
+
 run/dev: ## [Local development] Run the development docker image.
 	docker-compose -f docker-compose.yaml up --build
 

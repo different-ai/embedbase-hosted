@@ -2,3 +2,4 @@ fastapi
 posthog
 supabase
 firebase_admin
+git+https://github.com/different-ai/embedbase@main#egg=embedbase

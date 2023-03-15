@@ -13,5 +13,3 @@ pytest-asyncio
 jupyter
 # for automatically removing unused imports
 autoflake
-
-git+https://github.com/different-ai/embedbase@main#egg=embedbase
