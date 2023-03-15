@@ -78,7 +78,11 @@ def get_in_firebase(api_key: str, scope: dict):
     data = doc.to_dict()
     if "userId" not in data:
         return None
-    return data["userId"]
+    user: auth.UserRecord = auth.get_user(scope["uid"])
+    return {
+        "uid": user.uid,
+        "email": user.email,
+    }
 
 
 def get_in_supabase(api_key: str, scope: dict):
@@ -86,9 +90,15 @@ def get_in_supabase(api_key: str, scope: dict):
         res = supabase.from_("api-keys").select("*").eq("api_key", api_key).execute()
         if not res.data or "user_id" not in res.data[0]:
             return None
-        return res.data[0]["user_id"]
+        uid = res.data[0]["user_id"]
+        user = supabase.auth.admin.get_user_by_id(uid).user
+        return {
+            "uid": user.id,
+            "email": user.email,
+        }
     except PostgrestAPIError:
         raise DetailedError(scope, 401, "invalid api key")
+
 
 async def check_api_key(scope: dict) -> Tuple[str, str]:
     # extract token from header
@@ -115,19 +125,15 @@ async def check_api_key(scope: dict) -> Tuple[str, str]:
     assert api_key, "invalid api key"
 
     try:
-        uid = get_in_firebase(api_key, scope) or get_in_supabase(api_key, scope)
-        if not uid:
+        user = get_in_firebase(api_key, scope) or get_in_supabase(api_key, scope)
+        if not user:
             raise DetailedError(scope, 401, "invalid api key")
-        scope["uid"] = uid
+        scope["uid"] = user["uid"]
+        scope["email"] = user["email"]
     except Exception as err:
         raise DetailedError(scope, 401, str(err))
 
-    # try:
-    #     user: auth.UserRecord = auth.get_user(scope["uid"])
-    # except:
-    #     raise DetailedError(scope, 401, "invalid uid")
-
-    return scope["uid"], api_key
+    return user, api_key
 
 
 class AuthApiKey(BaseHTTPMiddleware):
@@ -146,9 +152,13 @@ class AuthApiKey(BaseHTTPMiddleware):
 
         path_segments = request.scope["path"].split("/")
         try:
-            user_id, api_key = await check_api_key(request.scope)
-            request.scope["uid"] = user_id
-            posthog.identify(user_id)
+            user, api_key = await check_api_key(request.scope)
+            posthog.identify(
+                user["uid"],
+                {
+                    "email": user["email"],
+                },
+            )
             event = None
             # POST /v1/{vault_id}/search
             if "search" == path_segments[-1]:
@@ -159,10 +169,11 @@ class AuthApiKey(BaseHTTPMiddleware):
             # otherwise we don't track
             if event:
                 posthog.capture(
-                    user_id,
+                    user["uid"],
                     event=event,
                     properties={
                         "api_key": api_key,
+                        "email": user["email"],
                     },
                 )
         except Exception as exc:
