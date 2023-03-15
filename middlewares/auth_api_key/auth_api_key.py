@@ -2,12 +2,12 @@ import os
 import yaml
 from typing import Tuple
 import warnings
-from fastapi import FastAPI, Request
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from firebase_admin import initialize_app, credentials, firestore, auth
 import posthog
 from starlette.middleware.base import BaseHTTPMiddleware
-from supabase import create_client, Client
+from supabase import create_client, Client, PostgrestAPIError
 
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
@@ -82,12 +82,13 @@ def get_in_firebase(api_key: str, scope: dict):
 
 
 def get_in_supabase(api_key: str, scope: dict):
-    res = supabase.from_("api-keys").select("*").eq("api_key", api_key).execute()
-    print("res", res)
-    if not res.data or "user_id" not in res.data[0]:
-        return None
-    return res.data[0]["user_id"]
-
+    try:
+        res = supabase.from_("api-keys").select("*").eq("api_key", api_key).execute()
+        if not res.data or "user_id" not in res.data[0]:
+            return None
+        return res.data[0]["user_id"]
+    except PostgrestAPIError:
+        raise DetailedError(scope, 401, "invalid api key")
 
 async def check_api_key(scope: dict) -> Tuple[str, str]:
     # extract token from header

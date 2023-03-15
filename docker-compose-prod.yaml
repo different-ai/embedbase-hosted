@@ -12,4 +12,3 @@ services:
     volumes:
       - ./config.yaml:/app/config.yaml
       - ./svc.prod.json:/secrets_firebase/svc.prod.json
-      # - ./middlewares/auth_api_key/auth_api_key.py:/app/middlewares/auth_api_key/auth_api_key.py

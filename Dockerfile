@@ -4,4 +4,6 @@ RUN apt-get update && apt-get install -y git && apt-get clean && \
     pip install -r requirements.txt && rm requirements.txt
 COPY ./middlewares/auth_api_key/auth_api_key.py /app/middlewares/auth_api_key/auth_api_key.py
 COPY main.py main.py
-CMD gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app -b 0.0.0.0:${PORT} --threads 8 --timeout 0 --log-level info
+
+ENTRYPOINT ["docker/docker-entrypoint.sh"]
+CMD ["embedbase"]
