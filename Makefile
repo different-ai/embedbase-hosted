@@ -20,18 +20,14 @@ install: ## [DEVELOPMENT] Install the API dependencies
 run:
 	python3 -m uvicorn main:app --reload --port ${LOCAL_PORT}
 
-run/dev: ## [Local development] Run the development docker image.
+docker/run/dev: ## [Local development] Run the development docker image.
 	docker-compose -f docker-compose.yaml up --build
 
-run/prod:
+docker/run/prod:
 	docker-compose -f docker-compose-prod.yaml up
 
 test: ## [Local development] Run tests with pytest.
-# make run/dev &
-# while ! curl -s -X GET http://localhost:8000/health | grep "success"; do sleep 1; done
-# . env/bin/activate; \
-# docker-compose down
-	@echo "unimplemented"
+	python3 -m pytest  -s ./middlewares/auth_api_key/test_api_key.py::test_clear
 	@echo "Done testing"
 
 build: ## [Local development] Build the docker image.
