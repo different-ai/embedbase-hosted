@@ -60,13 +60,13 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            gcr.io/${{ env.PROJECT_ID }}/embedbase-hosted:latest-dev
+            gcr.io/embedbase/embedbase-hosted:latest-dev
 
       - name: Deploy to Cloud Run dev
         uses: google-github-actions/deploy-cloudrun@v0
         with:
           metadata: service.dev.yaml
-          project_id: ${{ env.PROJECT_ID }}
+          project_id: embedbase
           region: us-central1
           tag: ${{ env.VERSION }}
 
