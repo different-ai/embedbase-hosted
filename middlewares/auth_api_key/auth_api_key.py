@@ -79,7 +79,7 @@ def get_in_firebase(api_key: str, scope: dict):
     data = doc.to_dict()
     if "userId" not in data:
         return None
-    user: auth.UserRecord = auth.get_user(scope["uid"])
+    user: auth.UserRecord = auth.get_user(data["userId"])
     return {
         "uid": user.uid,
         "email": user.email,
