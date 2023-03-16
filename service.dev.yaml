@@ -48,7 +48,7 @@ spec:
           secret:
             secretName: EMBEDBASE_HOSTED_DEV
             items:
-              - key: "2"
+              - key: "3"
                 path: config.yaml
         - name: firebase_admin_service_account
           secret:

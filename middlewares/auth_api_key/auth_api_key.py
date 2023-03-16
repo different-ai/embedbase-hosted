@@ -33,6 +33,7 @@ DEVELOPMENT_IGNORED_PATHS = [
 
 PRODUCTION_IGNORED_PATHS = [
     "health",
+    "auth-health",
 ]
 
 SECRET_FIREBASE_PATH = (

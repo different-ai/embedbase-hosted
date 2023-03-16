@@ -39,3 +39,34 @@ jobs:
 
       - name: Run tests
         run: make test
+
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY_PROD }}"
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker
+
+      - name: Get the version
+        id: get_version
+        run: echo "VERSION=$(sed -n 's/.*image:.*:\(.*\)/\1/p' service.prod.yaml)" >> $GITHUB_ENV
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            gcr.io/${{ env.PROJECT_ID }}/embedbase-hosted:latest-dev
+
+      - name: Deploy to Cloud Run dev
+        uses: google-github-actions/deploy-cloudrun@v0
+        with:
+          metadata: service.dev.yaml
+          project_id: ${{ env.PROJECT_ID }}
+          region: us-central1
+          tag: ${{ env.VERSION }}
+

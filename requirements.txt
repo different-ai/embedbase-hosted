@@ -1,4 +1,4 @@
 posthog
 supabase
 firebase_admin
-embedbase
+embedbase==0.8.8
