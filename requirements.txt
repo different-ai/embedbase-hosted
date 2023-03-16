@@ -2,3 +2,4 @@ posthog
 supabase
 firebase_admin
 embedbase==0.8.8
+sentry_sdk
