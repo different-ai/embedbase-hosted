@@ -32,8 +32,7 @@ tasks:
         }
         EOL
 
-# TODO: gcloud install
-image: # TODO:broken image?
+image:
   file: .gitpod.Dockerfile
 
 vscode:
@@ -50,6 +49,7 @@ vscode:
     - trungngo.autoflake
     - christian-kohler.npm-intellisense
     - dbaeumer.vscode-eslint
+    - github.copilot-labs
 
 
 ports:
