@@ -24,13 +24,21 @@ spec:
           periodSeconds: 30
           timeoutSeconds: 30
           failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: /health
+          initialDelaySeconds: 30
+          successThreshold: 1
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 30
         env:
           - name: ENVIRONMENT
             value: "development"
           - name: UPLOAD_BATCH_SIZE
             value: "100"
           - name: SENTRY_RELEASE
-            value: "0.3.3"
+            value: "0.3.4"
         ports:
           - containerPort: 8080
             name: http1

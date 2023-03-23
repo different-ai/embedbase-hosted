@@ -15,8 +15,16 @@ spec:
       serviceAccountName: embedbase-cloud-run@embedbase.iam.gserviceaccount.com
       containerConcurrency: 80
       containers:
-        image: gcr.io/embedbase/embedbase-hosted:0.3.3
+        image: gcr.io/embedbase/embedbase-hosted:0.3.4
         startupProbe:
+          httpGet:
+            path: /health
+          initialDelaySeconds: 30
+          successThreshold: 1
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 30
+        livenessProbe:
           httpGet:
             path: /health
           initialDelaySeconds: 30
@@ -30,7 +38,7 @@ spec:
           - name: UPLOAD_BATCH_SIZE
             value: "100"
           - name: SENTRY_RELEASE
-            value: "0.3.3"
+            value: "0.3.4"
         ports:
           - containerPort: 8080
             name: http1
