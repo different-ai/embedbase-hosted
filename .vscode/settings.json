@@ -1,5 +1,5 @@
 {
-    "python.envFile": "${workspaceFolder}/.env",
+    "python.envFile": "${workspaceFolder}/env",
     "python.formatting.provider": "black",
     "python.testing.pytestArgs": [
         "."
