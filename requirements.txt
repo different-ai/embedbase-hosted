@@ -1,5 +1,5 @@
 posthog
 supabase
 firebase_admin
-embedbase==0.9.4
+embedbase==0.9.5
 sentry_sdk[fastapi]
