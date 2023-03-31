@@ -9,7 +9,8 @@ import pandas as pd
 import pytest
 from embedbase.settings import Settings
 from embedbase import get_app
-from embedbase.supabase_db import Supabase
+from embedbase.database.supabase_db import Supabase
+from embedbase.embedding.openai import OpenAI
 
 unit_testing_dataset = "unit_test"
 
@@ -26,7 +27,8 @@ openai.organization = settings.openai_organization
 async def clear_dataset(dataset_id: str = unit_testing_dataset):
     app = (
         get_app(settings)
-        .use(
+        .use_embedder(OpenAI(settings.openai_api_key, settings.openai_organization))
+        .use_db(
             Supabase(
                 settings.supabase_url,
                 settings.supabase_key,
@@ -48,7 +50,8 @@ async def clear_dataset(dataset_id: str = unit_testing_dataset):
 async def test_clear():
     app = (
         get_app(settings)
-        .use(
+        .use_embedder(OpenAI(settings.openai_api_key, settings.openai_organization))
+        .use_db(
             Supabase(
                 settings.supabase_url,
                 settings.supabase_key,
