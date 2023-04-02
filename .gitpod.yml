@@ -12,6 +12,7 @@ tasks:
         eval $(gp env -e)
         pip3 install yq
         echo "$EMBEDBASE_CONFIG" | yq -y > config.yaml
+    # TODO: just automate auth if it's frequent need
     - name: Authenticate to Google Cloud
       command: |
         eval $(gp env -e)
@@ -31,6 +32,12 @@ tasks:
           }
         }
         EOL
+    - name: Authenticate Stripe
+      command: |
+        stripe login
+    - name: Authenticate Supabase
+      command: |
+        echo $SUPABASE_TOKEN | npx supabase login
 
 image:
   file: .gitpod.Dockerfile
