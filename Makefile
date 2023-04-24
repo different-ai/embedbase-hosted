@@ -48,6 +48,9 @@ deploy/dev: ## [Local development] Deploy the Cloud run service.
 	docker push ${LATEST_IMAGE_URL}-dev
 	gcloud run services replace ./service.dev.yaml --region ${REGION}
 
+scripts/users:
+	python3 scripts/main.py get_users
+
 release: ## [Local development] Release a new version of the API.
 	@echo "Releasing version ${VERSION}"; \
 	read -p "Commit content:" COMMIT; \
