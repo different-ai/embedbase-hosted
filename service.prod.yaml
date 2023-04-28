@@ -15,7 +15,7 @@ spec:
       serviceAccountName: embedbase-cloud-run@embedbase.iam.gserviceaccount.com
       containerConcurrency: 80
       containers:
-        image: gcr.io/embedbase/embedbase-hosted:0.3.7
+        image: gcr.io/embedbase/embedbase-hosted:0.3.8
         startupProbe:
           httpGet:
             path: /health
@@ -58,7 +58,7 @@ spec:
           secret:
             secretName: EMBEDBASE_HOSTED
             items:
-              - key: "16"
+              - key: "18"
                 path: config.yaml
         - name: firebase_admin_service_account
           secret:
