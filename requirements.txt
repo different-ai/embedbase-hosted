@@ -1,6 +1,6 @@
 posthog
 supabase
 firebase_admin
-embedbase==1.0.7
+embedbase==1.0.8
 openai
 sentry_sdk[fastapi]
