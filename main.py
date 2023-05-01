@@ -20,11 +20,50 @@ if not os.path.exists(os.path.join(SECRET_PATH, config_path)):
 
 settings = get_settings_from_file(os.path.join(SECRET_PATH, config_path))
 
+
+db = Supabase(settings.supabase_url, settings.supabase_key)
+
+async def create_dataset(dataset_id: str, owner: str) -> None:
+    # Check if the pair user_id - dataset_id already exists in the table
+    existing_dataset = (
+        db.supabase.table("datasets")
+        .select("id")
+        .eq("name", dataset_id)
+        .eq("owner", owner)
+        .execute()
+        .data
+    )
+
+    # If the pair doesn't exist, create a new row in the table
+    if not existing_dataset:
+        await db.supabase.table("datasets").insert(
+            {"name": dataset_id, "owner": owner}
+        ).execute()
+    else:
+        print(f"Dataset with id {dataset_id} and owner {owner} already exists.")
+
+
+async def auto_create_dataset(request, call_next):
+    """
+    Create a dataset row in the database if it doesn't exist
+    in the table datasets with the pair dataset_id . user_id
+    """
+
+    dataset_id = request.path_params.get("dataset_id")
+    user_id = request.scope.get("uid")
+
+    if dataset_id and user_id:
+        await create_dataset(dataset_id, user_id)
+
+    return await call_next(request)
+
+
 app = (
     get_app(settings)
     .use_embedder(OpenAI(settings.openai_api_key, settings.openai_organization))
-    .use_db(Supabase(settings.supabase_url, settings.supabase_key))
+    .use_db(db)
     .use_middleware(AuthApiKey)
+    .use_middleware(auto_create_dataset)
     .use_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -35,6 +74,7 @@ app = (
 )
 
 app = app.run()
+
 
 @app.exception_handler(Exception)
 async def custom_exception_handler(request: Request, exc: Exception):
